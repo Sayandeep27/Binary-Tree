@@ -1,0 +1,55 @@
+class Solution {
+public:
+    vector<int>ans;
+    vector<TreeNode*>path;
+
+    bool findpath(TreeNode* root,TreeNode* target)
+    {
+        if(root==NULL) return false;
+
+        path.push_back(root);
+
+        if(root==target) return true;
+
+        if(findpath(root->left,target) or findpath(root->right,target))
+        {
+            return true;
+        }
+
+        path.pop_back();
+
+        return false;
+    }
+
+    void child(TreeNode* root,int k,int tar)
+    {
+        if(root==NULL) return;
+        if(k<0) return;
+        if(root->val==tar) return;
+
+        if(k==0 and root->val!=tar) ans.push_back(root->val);
+
+        child(root->left,k-1,tar);
+        child(root->right,k-1,tar);
+
+    }
+
+    vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
+
+          findpath(root,target);
+
+          int tar=INT_MIN;
+
+          int n=path.size();   
+
+          for(int i=n-1;i>=0 and n-1-i<=k;i--)
+          {
+              child(path[i],k-(n-1-i),tar);
+
+              tar=path[i]->val;
+          }      
+         
+          return ans;
+
+    }
+};
