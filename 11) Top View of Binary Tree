@@ -4,52 +4,37 @@ class Solution
     
     vector<int> topView(Node *root)
     {
-        map<int,int>mp;
-        
         vector<int>ans;
         
-        if(root==NULL)
-        {
-            return ans;
-        }
+        map<int,int>mp;
         
         queue<pair<Node*,int>>q;
+        
         q.push({root,0});
         
         
-        while(q.size()>0)
+        while(!q.empty())
         {
-            Node* temp=q.front().first;
-            int vh=q.front().second;
+            Node* node=q.front().first;
+            int line=q.front().second;
             q.pop();
             
-            if(mp[vh]==0)
+            if(mp.find(line)==mp.end())
             {
-                mp[vh]=temp->data;
+                mp[line]=node->data;
             }
             
-            if(temp->left!=NULL)
-            {
-                q.push({temp->left,vh-1});
-            }
-            if(temp->right!=NULL)
-            {
-                q.push({temp->right,vh+1});
-            }
+            if(node->left!=NULL) q.push({node->left,line-1});
+            
+            if(node->right!=NULL) q.push({node->right,line+1});
         }
-        
         
         for(auto it:mp)
         {
-        ans.push_back(it.second);
+            ans.push_back(it.second);
         }
-    
-    
-       return ans;
         
-    
-
-
-  }
+        return ans;
+    }
 
 };
