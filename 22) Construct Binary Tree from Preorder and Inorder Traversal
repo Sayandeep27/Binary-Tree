@@ -1,0 +1,36 @@
+class Solution {
+public:
+   
+   TreeNode* construct(int prestart,int preend,vector<int>&preorder,int instart,int inend,vector<int>&inorder,map<int,int>&mp)
+   {
+        
+        if(prestart>preend or instart>inend) return  NULL;
+
+        TreeNode* root=new TreeNode(preorder[prestart]);
+
+        int inroot=mp[root->val];
+        int numsleft=inroot-instart;
+
+        root->left=construct(prestart+1,prestart+numsleft,preorder,instart,inroot-1,inorder,mp);
+        root->right=construct(prestart+numsleft+1,preend,preorder,inroot+1,inend,inorder,mp);
+
+        return root;
+   }
+
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+         
+         map<int,int>mp;
+         int n=inorder.size();
+
+         for(int i=0;i<n;i++)
+         {
+             mp[inorder[i]]=i;
+         }
+
+         
+         TreeNode* root=construct(0,preorder.size()-1,preorder,0,inorder.size()-1,inorder,mp);
+
+         return root;
+        
+    }
+};
