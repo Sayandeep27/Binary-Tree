@@ -1,0 +1,31 @@
+class Solution {
+public:
+   int x ;
+    TreeNode* solve(vector<int> &inorder,vector<int> &postorder,int start,int end){
+        
+        if(start>end)return NULL;
+
+        TreeNode* node = new TreeNode(postorder[x++]);
+
+        int i;
+
+        for(i = start; i<=end; i++)
+        {
+            if(node->val == inorder[i])
+            {
+                break;
+            }
+        }
+
+        node->right = solve(inorder,postorder,i+1,end);
+        node->left = solve(inorder,postorder,start,i-1);
+        return node;
+    }
+
+    TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+        reverse(postorder.begin(),postorder.end());
+        x = 0;
+        return solve(inorder,postorder,0,inorder.size()-1);
+        
+    }
+};
