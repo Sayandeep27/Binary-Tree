@@ -1,18 +1,29 @@
 class Solution {
 public:
-    void  addLeaf(Node* root,vector<int>&res)
+    vector<int>ans;
+
+    bool isLeaf(Node* node)
     {
-        if(isLeaf(root)==true)
-        {
-            res.push_back(root->data);
-            return;
-        }
+        if(node->left==NULL and node->right==NULL) return true;
         
-        if(root->left!=NULL)  addLeaf(root->left,res);
-        if(root->right!=NULL)  addLeaf(root->right,res);
+        return false;
     }
     
-    void addRightBoundary(Node* root,vector<int>&res)
+    
+    void addLeftBoundary(Node* root)
+    {
+        Node* curr=root->left;
+        
+        while(curr!=NULL)
+        {
+            if(isLeaf(curr)==false) ans.push_back(curr->data);
+            
+            if(curr->left!=NULL) curr=curr->left;
+            else curr=curr->right;
+        }
+    }
+    
+    void addRightBoundary(Node* root)
     {
         Node* curr=root->right;
         
@@ -22,59 +33,51 @@ public:
         {
             if(isLeaf(curr)==false) st.push(curr->data);
             
-            if(curr->right!=NULL) curr=curr->right;
-            else curr=curr->left;
+            if(curr->left!=NULL) curr=curr->left;
+            else curr=curr->right;
         }
         
+        
+        // adding the stack elements into ans vector
         while(!st.empty())
         {
-            res.push_back(st.top());
+            ans.push_back(st.top());
             st.pop();
         }
     }
-
-    void addLeftBoundary(Node* root,vector<int>&res)
+    
+    void addLeaf(Node* root)
     {
-        Node* curr=root->left;
-        
-        while(curr!=NULL)
+        if(isLeaf(root)==true)
         {
-            if(isLeaf(curr)==false) res.push_back(curr->data);
-            
-            if(curr->left!=NULL)
-            {
-                curr=curr->left;
-            }
-            else
-            {
-                curr=curr->right;
-            }
+            ans.push_back(root->data);
+            return;
         }
-    }
-    
-    bool isLeaf(Node* node)
-    {
-        if(node->left==NULL and node->right==NULL) return true;
         
-        return false;
+        if(root->left!=NULL) addLeaf(root->left);
         
+        if(root->right!=NULL) addLeaf(root->right);
     }
-    
+
+
     vector <int> boundary(Node *root)
     {
-        vector<int>res;
         
-        if(root==NULL) return res;
         
-        if(isLeaf(root)==false) res.push_back(root->data);
         
-        addLeftBoundary(root,res);
+        if(root==NULL) return ans;
         
-        addLeaf(root,res);
+        if(isLeaf(root)==false)
+        {
+            ans.push_back(root->data);
+        }
         
-        addRightBoundary(root,res);
+        addLeftBoundary(root);
+        addLeaf(root);
+        addRightBoundary(root);
         
-        return res;
         
+        return ans;
         
     }
+};
