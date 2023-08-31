@@ -1,55 +1,104 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
 class Solution {
 public:
-    vector<int>ans;
-    vector<TreeNode*>path;
 
-    bool findpath(TreeNode* root,TreeNode* target)
+    void markparents(TreeNode* root,map<TreeNode*,TreeNode*>&parent,TreeNode* target)
     {
-        if(root==NULL) return false;
+        queue<TreeNode*>q;
+        q.push(root);
 
-        path.push_back(root);
-
-        if(root==target) return true;
-
-        if(findpath(root->left,target) or findpath(root->right,target))
+        while(!q.empty())
         {
-            return true;
+            TreeNode* curr=q.front();
+            q.pop();
+
+            if(curr->left!=NULL)
+            {
+                parent[curr->left]=curr;
+                q.push(curr->left);
+            }
+
+            if(curr->right!=NULL)
+            {
+                parent[curr->right]=curr;
+                q.push(curr->right);
+            }
         }
 
-        path.pop_back();
-
-        return false;
-    }
-
-    void child(TreeNode* root,int k,int tar)
-    {
-        if(root==NULL) return;
-        if(k<0) return;
-        if(root->val==tar) return;
-
-        if(k==0 and root->val!=tar) ans.push_back(root->val);
-
-        child(root->left,k-1,tar);
-        child(root->right,k-1,tar);
 
     }
 
     vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
-
-          findpath(root,target);
-
-          int tar=INT_MIN;
-
-          int n=path.size();   
-
-          for(int i=n-1;i>=0 and n-1-i<=k;i--)
-          {
-              child(path[i],k-(n-1-i),tar);
-
-              tar=path[i]->val;
-          }      
          
-          return ans;
+         map<TreeNode*,TreeNode*>parent;
+
+         markparents(root,parent,target);
+
+         map<TreeNode*,bool>visited;
+         queue<TreeNode*>q;
+
+         q.push(target);
+         visited[target]=true;
+         int dist=0;
+
+
+
+         while(!q.empty())
+         {
+             int n=q.size();
+             
+             if(dist++ ==k) break;
+             
+           
+             for(int i=0;i<n;i++)
+             {
+                 TreeNode* curr=q.front();
+                 q.pop();
+
+                 if(curr->left!=NULL and visited[curr->left]==false)
+                 {
+                     visited[curr->left]=true;
+                     q.push(curr->left);
+                 }
+
+                 if(curr->right!=NULL and visited[curr->right]==false)
+                 {
+                     visited[curr->right]=true;
+                     q.push(curr->right);
+                 }
+
+                 if(parent[curr]!=NULL and visited[parent[curr]]==false)
+                 {
+                     visited[parent[curr]]=true;
+                     q.push(parent[curr]);
+                 }
+             }
+
+
+
+
+         }
+
+
+         vector<int>ans;
+
+         while(!q.empty())
+         {
+             TreeNode* temp=q.front();
+             q.pop();
+
+             ans.push_back(temp->val);
+         }
+
+       return ans;
 
     }
 };
