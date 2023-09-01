@@ -12,37 +12,32 @@
 class Solution {
 public:
     void flatten(TreeNode* root) {
-         
+        
 
-         // base cases
-         if(root==NULL) return;
-         if(root->left==NULL and root->right==NULL) return;
+        // base cases
+        if(root==NULL) return;
+        if(root->left==NULL and root->right==NULL) return;
 
-         if(root->left!=NULL)
-         {
-             flatten(root->left);
+        if(root->left!=NULL)
+        {
+            flatten(root->left);
 
-             TreeNode* temp=root->right;
+            TreeNode* temp=root->right;
 
-             root->right=root->left;
-             root->left=NULL;
+            root->right=root->left;
+            root->left=NULL;
 
+            TreeNode* curr=root;
 
-            TreeNode* t=root->right;
-
-            while(t->right!=NULL)
+            while(curr->right!=NULL)
             {
-                t=t->right;
+                curr=curr->right;
             }
 
-            t->right=temp;
+            curr->right=temp;
+        }
 
-
-         }
-
-         
-         flatten(root->right);
-
+        flatten(root->right);
 
     }
 };
